@@ -1,0 +1,241 @@
+/* =====================================================================
+   FUTELITE SHOP - ARQUIVO DE ESTILOS "ROUPA DO SITE" (style.css)
+   ---------------------------------------------------------------------
+   COMO LER ESTE ARQUIVO:
+   O visual da loja e feito de duas partes:
+     1) O Tailwind CSS (carregado pela internet no index.html), que da
+        as classes prontas como "bg-slate-900", "text-white" etc.
+     2) ESTE arquivo, que guarda os ajustes que o Tailwind nao faz
+        sozinho como o TEMA CLARO, as areas seguras do celular e detalhes se adaptando as telas.
+
+   Dica: o site nasce no tema ESCURO. Quando o cliente clica no botao
+   de sol/lua, o JavaScript coloca a classe "light" na tag <html>, e
+   todas as regras que comecam com "html.light" passam a valer. Ou seja ele ja abre automaticamente no tema escuro.
+   ===================================================================== */
+
+
+/* =====================================================================
+   SECAO 1: CONFIGURACOES BASICAS DO SITE 
+   ===================================================================== */
+
+/* ":root" representa a pagina inteira de um vez (faz o mesmo que a tag <html>).
+   Aqui ficam as regras que valem para o site todo, dizendo como o site deve se comportar conforme o modo que e onde que e aberto. */
+:root {
+  /* Avisa ao navegador que o site e' escuro por padrao. Assim, barras de
+     rolagem e campos de formulario tambem ficam escuros. */
+  color-scheme: dark;
+
+  /* Faz o tamanho dos elementos ja contar a borda e o espaco interno como um todo.
+     Evita que as coisas "estourem" para fora da tela sem querer. */
+  box-sizing: border-box;
+
+  /* "Area segura" = pedacos da tela do celular que ficam escondidos
+     pelo notch (a "franja"/ ilha da camera) ou pela barra de gestos ou a de ferramentas se estir em um PC.
+     Estas duas linhas empurram o conteudo para nao ficar embaixo deles.
+     Em computador esse valor e' 0, entao nao muda nada. */
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Regras da tag <html> */
+html {
+  /* Quando voce clica num link que leva a outra parte da pagina, isto
+     deixa uma folguinha em cima para o conteudo nao ficar escondido
+     atras do cabecalho do celular. */
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+
+  /* Cor de fundo do site no tema escuro (um azul quase preto). */
+  background: #020617;
+}
+
+/* Regras do corpo da pagina (<body>) */
+body {
+  /* Mesma cor de fundo do <html>, para nao aparecer "emenda" de cor. */
+  background: #020617;
+}
+
+/* Regras so para o cabecalho que tem a classe "topo"
+   (a barra de cima com logo, busca e carrinho). */
+header.topo {
+  /* O cabecalho fica "grudado" no topo ao rolar a pagina. Esta linha
+     faz ele grudar um pouco abaixo do notch do celular, nao por cima. */
+  top: env(safe-area-inset-top, 0px);
+}
+
+/* Classe auxiliar para ESCONDER a barra de rolagem.
+   E' usada nos botoes de categoria, que rolam para o lado no celular
+   mas ficam mais bonitos sem a barrinha aparecendo. */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* =====================================================================
+   SECAO 2: TEMA CLARO
+   ---------------------------------------------------------------------
+   Todas as regras abaixo so' funcionam quando a tag <html> tem a classe
+   "light". E' assim que o botao de tema "troca as cores" do site.
+   A cor dourada/ambar (o destaque da marca) e' mantida nos dois temas.
+   ===================================================================== */
+
+/* --- 2.1 Fundo geral e cor padrao do texto --- */
+
+html.light {
+  /* Agora o navegador sabe que o site e claro. */
+  color-scheme: light;
+  /* Fundo cinza bem clarinho. */
+  background: #f1f5f9;
+}
+
+html.light body {
+  background: #f1f5f9;
+  /* Cor padrao do texto: quase preto, para ler bem no fundo claro. */
+  color: #0f172a;
+}
+
+/* --- 2.2 Cores de fundo ---
+   A ideia e "traduzir" cada cor escura do Tailwind para uma clara.
+   Ex.: o que era azul-escuro (slate-900) vira branco. */
+
+/* Cartoes, cabecalho, carrinho e modal: de escuro para branco. */
+html.light .bg-slate-900 {
+  background-color: #ffffff;
+}
+
+/* Versao com 90% de opacidade (o cabecalho usa essa, com efeito de vidro).
+   O "\/" e' so' a forma de escrever a barra "/" no nome da classe. */
+html.light .bg-slate-900\/90 {
+  background-color: rgba(255, 255, 255, 0.92);
+}
+
+/* Campos de busca, botoes secundarios: cinza claro. */
+html.light .bg-slate-800 {
+  background-color: #e2e8f0;
+}
+
+/* Caixinhas internas (ex.: itens do carrinho): cinza ainda mais suave. */
+html.light .bg-slate-800\/50 {
+  background-color: #f1f5f9;
+}
+
+/* Botoes de + e - do carrinho: cinza medio. */
+html.light .bg-slate-700 {
+  background-color: #cbd5e1;
+}
+
+/* --- 2.3 Cores das bordas (linhas de contorno) --- */
+
+/* Linhas separadoras bem discretas. */
+html.light .border-slate-800,
+html.light .border-slate-800\/80 {
+  border-color: #e2e8f0;
+}
+
+/* Contornos um pouco mais marcados (campos, botoes). */
+html.light .border-slate-700,
+html.light .border-slate-700\/50 {
+  border-color: #cbd5e1;
+}
+
+/* --- 2.4 Cores dos textos --- */
+
+/* O que era branco (titulos, precos) vira quase preto. */
+html.light .text-white {
+  color: #0f172a;
+}
+
+html.light .text-slate-200 {
+  color: #1e293b;
+}
+
+html.light .text-slate-300 {
+  color: #334155;
+}
+
+/* Textos secundarios (descricoes, legendas): cinza medio. */
+html.light .text-slate-400,
+html.light .text-slate-500 {
+  color: #64748b;
+}
+
+/* Dourado escurecido para ter contraste no fundo claro.
+   O ":not(.bg-slate-950)" significa "exceto" os itens com fundo preto,
+   como o numero do carrinho, que precisa continuar dourado vivo. */
+html.light .text-amber-500:not(.bg-slate-950) {
+  color: #b45309;
+}
+
+/* Verde (ex.: "GRATIS", status VIP ativo), mais escuro para ler bem. */
+html.light .text-emerald-400 {
+  color: #059669;
+}
+
+/* Vermelho (ex.: lixeira, "Sair da conta"), mais escuro tambem. */
+html.light .text-red-400 {
+  color: #dc2626;
+}
+
+/* --- 2.5 Degrade da secao de destaque (hero) ---
+   Troca o degrade escuro por um que vai de branco -> amarelo clarinho -> branco. */
+html.light .from-slate-900 {
+  background-image: linear-gradient(to right, #ffffff, #fef3c7, #ffffff);
+}
+
+
+/* =====================================================================
+   SECAO 3: EFEITOS DE "PASSAR O MOUSE POR CIMA" (HOVER) NO TEMA CLARO
+   ---------------------------------------------------------------------
+   Sem estas regras, os botoes ficariam com a cor escura do tema escuro
+   quando o cliente passasse o mouse. Aqui ajustamos cada um.
+   (Obs: o "hover" e o estado "mouse em cima do elemento".)
+   ===================================================================== */
+
+html.light .hover\:bg-slate-700:hover {
+  background-color: #cbd5e1;
+}
+
+html.light .hover\:bg-slate-600:hover {
+  background-color: #94a3b8;
+}
+
+/* Botao dourado: fica um pouco mais vivo ao passar o mouse. */
+html.light .hover\:bg-amber-500:hover {
+  background-color: #f59e0b;
+}
+
+/* Botao dourado principal: fica um pouco mais escuro ao passar o mouse. */
+html.light .hover\:bg-amber-600:hover {
+  background-color: #d97706;
+}
+
+html.light .hover\:text-slate-950:hover {
+  color: #020617;
+}
+
+html.light .hover\:text-white:hover {
+  color: #0f172a;
+}
+
+html.light .hover\:text-red-400:hover {
+  color: #dc2626;
+}
+
+html.light .hover\:border-slate-700:hover {
+  border-color: #94a3b8;
+}
+
+
+/* =====================================================================
+   SECAO 4: DETALHE EXTRA NOS CARTOES DE PRODUTO (TEMA CLARO)
+   ---------------------------------------------------------------------
+   No fundo claro, cartoes brancos "somem" se nao tiverem contorno.
+   Esta sombrinha leve da' a sensacao de que eles estao levemente
+   levantados da pagina.
+   "#gridProdutos > div" = cada cartao (div) que esta' dentro da grade.
+   ===================================================================== */
+html.light #gridProdutos > div {
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+/*ATENCAO! Sobre o uso de IA, foi utilizada somente para entender e aprender tags novas para facilitar 
+ ou otimizar ou ate msm melhorar o site e melhorar a experiencia dos que iram visitar ele obg.*/

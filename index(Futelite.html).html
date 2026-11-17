@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<!-- FUTELITE SHOP - ESTRUTURA DO SITE  (index.html)
+     ---------------------------------------------------------------------
+     COMO FUNCIONA (os 3 arquivos ficam juntos na mesma pasta):
+       index.HTML  -> e' o "corpo/esqueleto": define onde cada coisa aparece e fica na tela.
+       style.css   -> o "visual/estilo": cuida das cores e do tema claro/escuro.
+       script.js   -> e' o "cerebro/central de operacoes": faz tudo acontecer (produtos, carrinho,
+                      login, quiz do plano VIP, cronometro da promocao relampago...).
+
+     Onde tudo se conecta:
+       - <link rel="stylesheet" href="style.css">  (vai dentro do <head>)
+       - <script src="script.js"></script>         (colocado no fim do <body>)
+
+     DICA PRA QUEM ESTA COMECANDO
+     Alguns blocos aqui estao "VAZIOS" de proposito — por exemplo, a grade de produtos.
+     Eles ficam vazios porque o JavaScript preenche sozinho assim que a pagina abre.-->
+<html lang="pt-BR">
+<head>
+  <!-- ================== ITENS BASICOS ==================-->
+<!-- Faz os acentos aparecerem corretamente. -->
+<meta charset="UTF-8">
+
+<!-- Deixa o site se ajustar e se alinhar totalmente ao tamanho do celular. (achei interessante clocar pois foi uma das coisas que estudamose vimos no comeco do ano com o professor Daniel e aprimoramos com o professor atual o Anderson)
+     "viewport-fit=cover" faz o site ocupar toda a tela, ate msm atras do notch.
+     (o style.css impede que algo fique escondido por ali). -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<!-- Titulo do site principal que aparece na aba do navegador. -->
+<title>FutElite Shop - Artigos Oficiais</title>
+
+<!-- ========== LEMBRA O TEMA ESCOLHIDO (script mt rapido, fica aqui mesmo) ==========
+     Precisa rodar ANTES! de tudo na pagina aparecer.
+     Procura no navegador se o cliente usou tema claro da ultima vez.
+     Se sim, ja aplica "light". Isso evita o flash de tela mudando de escuro pra claro ao abrir.
+     O "try/catch" garante que, se o navegador bloquear armazenamento,
+     o site funciona normalmente. -->
+<script>
+  try { if (localStorage.getItem('futelite-tema') === 'claro') document.documentElement.classList.add('light'); } catch (e) {}
+</script>
+
+<!-- ================== JANELAS EXTERNAS ================== -->
+
+<!-- Tailwind CSS: oferece classes de estilo prontas. -->
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+<!-- Lucide: biblioteca de icones (carrinho, lupa, trofeu, sol, lua...). -->
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.294.0/dist/umd/lucide.min.js"></script>
+
+<!-- Icone pequeno (trofeu) que aparece na aba do navegador. -->
+<link rel="icon" type="image/png" href="https://em-content.zobj.net/source/mozilla/36/trophy_1f3c6.png">
+
+<!-- ================== O CSS (arquivo separado) ==================
+     Liga o style.css com esta pagina. Ele vem depois do Tailwind para garantir
+     que nossos ajustes (como tema claro) tenham prioridade. -->
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col">
+
+<!-- =====================================================================
+     PARTE 1: CABECALHO (barra no topo, sempre facil de ver ao rolar)
+     Tem 3 partes: logo, campo de busca e botoes (tema, conta, carrinho).
+     ===================================================================== -->
+<header class="topo sticky z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+
+    <!-- Parte 1: LOGO da loja (trofeu + nome "FUTELITE"). -->
+    <a href="#" class="flex items-center gap-2 text-2xl font-black text-white">
+      <i data-lucide="trophy" class="text-amber-500 w-8 h-8"></i>
+      <span>FUT<span class="text-amber-500">ELITE</span></span>
+    </a>
+
+    <!-- Parte 2: CAMPO DE BUSCA.
+         O id="campoBusca" e' usado pelo script.js para encontrar
+         esta area e filtrar os produtos enquanto digita. -->
+    <div class="relative order-3 w-full md:order-none md:w-auto md:flex-1 md:max-w-md">
+      <input type="text" id="campoBusca" placeholder="Buscar produto..."
+        class="w-full bg-slate-800 border border-slate-700 rounded-full py-2 pl-10 pr-4 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
+      <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-slate-400"></i>
+    </div>
+
+    <!-- Parte 3: BOTOES DE ACAO RAPIDA -->
+    <div class="flex items-center gap-3">
+
+      <!-- Botao do tema (sol/lua). Ao clicar, chama alternarTema() do script.js.
+           O icone troca automaticamente conforme o tema. -->
+      <button id="btnTema" onclick="alternarTema()" aria-label="Alternar tema claro/escuro" title="Alternar tema"
+        class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-full border border-slate-700 transition">
+        <i data-lucide="sun" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Botao da conta. Ao clicar, chama a fucao abrirConta() (login ou dados do usuario).
+           O texto "Minha Conta" vira o nome do cliente depois do login.
+           "hidden sm:inline" = some em telas pequenas pra economizar  otimizar o max de espaco possivel. -->
+      <button onclick="abrirConta()" class="text-slate-300 hover:text-white flex items-center gap-1 text-sm font-medium">
+        <i data-lucide="user" class="w-5 h-5"></i><span id="rotuloConta" class="hidden sm:inline">Minha Conta</span>
+      </button>
+
+      <!-- Botao do carrinho. Ao clicar, abre ou fecha o painel do carrinho.
+           O numero na bolinha (id="qtdCarrinho") mostra quantos itens
+           estao no carrinho e e' atualizado pelo script. -->
+      <button onclick="verCarrinho()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2 rounded-full font-bold flex items-center gap-2 transition">
+        <i data-lucide="shopping-bag" class="w-5 h-5"></i><span class="hidden sm:inline">Carrinho</span>
+        <span id="qtdCarrinho" class="bg-slate-950 text-amber-500 text-xs px-2 py-0.5 rounded-full font-black">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- =====================================================================
+     PARTE 2: BANNER DA PROMOCAO RELAMPAGO E O CLIENTE VIP
+     Comeca escondido ("hidden"). O script.js mostra o banner enquanto
+     a promocao esta ativa e atualiza o relogio (id="contagem")
+     a cada segundo. O botao "Participar" inicia todo o quiz par fazer parte do VIP.
+     ===================================================================== -->
+<div id="bannerPromo" class="hidden bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950">
+  <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm font-bold">
+    <span class="flex items-center gap-1"><i data-lucide="zap" class="w-4 h-4"></i> PROMOCAO RELAMPAGO VIP: 20% OFF</span>
+    <span>termina em <span id="contagem" class="font-black tabular-nums">--:--</span></span>
+    <button id="btnPromo" onclick="participarPromo()" class="bg-slate-950 text-amber-500 disabled:opacity-60 px-3 py-1 rounded-full text-xs font-black">Participar</button>
+  </div>
+</div>
+
+<!-- =====================================================================
+     PARTE 3: MODAL (JANELA FLUTUANTE)
+     E' uma "caixa" vazia que aparece por cima do site. O script.js coloca
+     o conteudo dentro e ajusta conforme precisar: tela de login, dados
+     da conta, perguntas do quiz, mensagem de parabens etc.
+     Clicar no fundo escuro fecha a janela (onclick="fecharModal()").
+     ===================================================================== -->
+<div id="modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
+  <!-- Fundo escuro atras da janela. -->
+  <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="fecharModal()"></div>
+  <!-- A janela em si (conteudo preenchido pelo script). -->
+  <div id="modalConteudo" class="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto"></div>
+</div>
+
+<!-- =====================================================================
+     PARTE 4: HERO (VITRINE PRINCIPAL)
+     a primeira coisa destacada que o cliente ve logo ao entrar: produto principal
+     (chuteira edicao limitada), com botao de compra rapida.
+     ===================================================================== -->
+<section class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-800 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 py-12 md:py-16 grid md:grid-cols-2 items-center gap-8">
+
+    <!-- Esquerda: textos e botao. -->
+    <div>
+      <span class="bg-amber-500/10 text-amber-500 text-xs font-bold uppercase px-3 py-1 rounded-full border border-amber-500/20">Edicao Limitada</span>
+      <h1 class="text-3xl md:text-5xl font-extrabold mt-4 leading-tight">Puma Future Z <br><span class="text-amber-500">"Neymar Jr. Instituto"</span></h1>
+      <p class="text-slate-400 mt-3 text-sm md:text-base">Feita para quem gosta de criar jogadas. Controle total e visual exclusivo.</p>
+      <div class="mt-6 flex items-center gap-4">
+        <!-- "Comprar Agora": coloca o produto id 1 no carrinho e ja abre imediatamente o carrinho. -->
+        <button onclick="adicionarEAbrir(1)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold px-6 py-3 rounded-lg flex items-center gap-2 transition">
+          <i data-lucide="zap" class="w-5 h-5"></i> Comprar Agora
+        </button>
+        <span id="precoHero" class="text-2xl font-bold text-white">R$ 499,90</span>
+      </div>
+    </div>
+
+    <!-- Direita: foto do produto.
+         Sem "src" de propositalmente pois o script.js ja coloca a imagem certa. -->
+    <div class="relative flex justify-center">
+      <div class="absolute inset-0 bg-amber-500/10 rounded-full blur-3xl"></div>
+      <img id="imgHero" alt="Chuteira Neymar Jr" class="relative z-10 w-full max-w-md rounded-2xl shadow-2xl border border-slate-700/50 object-cover h-72">
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     PARTE 5: FILTROS E CATEGORIAS DE PRODUTOS 
+     Area "vazia": o script.js cria os botoes "Todos", "Chuteiras",
+     "Camisas", "Bolas" e "Treino".
+     ===================================================================== -->
+<section class="max-w-7xl mx-auto px-4 py-8">
+  <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none" id="botoesFiltro"></div>
+</section>
+
+<!-- =====================================================================
+     PARTE 6: GRADE DE PRODUTOS (JA ADAPITADO PARA GRNADES VARIEDADES DE TELAS E DISPOSITIVOS)
+     Tambem comeca vazia. O script.js monta um cartao para cada produto.
+     Layout: 1 coluna no celular, 2 no tablet, 3 ou 4 nas telas grandes.
+     ===================================================================== -->
+<main class="max-w-7xl mx-auto px-4 pb-16 flex-1 w-full">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="gridProdutos"></div>
+</main>
+
+<!-- =====================================================================
+     PARTE 7: PAINEL DO CARRINHO (gaveta lateral)
+     Fica escondido ate o cliente clicar no carrinho.
+     Tem: lista de itens (preenchida pelo script), subtotal, frete gratis,
+     total e o botao "Finalizar Pedido".
+     ===================================================================== -->
+<div id="painelCarrinho" class="fixed inset-0 z-50 hidden">
+  <!-- Fundo escuro atras do painel. Clicando nele fecha o carrinho. -->
+  <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="verCarrinho()"></div>
+
+  <!-- Gaveta do lado direito da tela. -->
+  <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-slate-900 border-l border-slate-800 p-6 flex flex-col shadow-2xl">
+
+    <!-- Titulo e botao X para fechar. -->
+    <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+      <h2 class="text-xl font-bold flex items-center gap-2"><i data-lucide="shopping-bag" class="text-amber-500"></i> Meu Carrinho</h2>
+      <button onclick="verCarrinho()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+    </div>
+
+    <!-- Lista dos itens (vazia aqui; o script preenche). Rola se tiver muitos itens. -->
+    <div id="listaCarrinho" class="flex-1 overflow-y-auto py-4 space-y-4"></div>
+
+    <!-- Rodape do carrinho: valores e botao de finalizar. -->
+    <div class="pt-4 border-t border-slate-800 space-y-4">
+      <div class="flex justify-between text-slate-400 text-sm"><span>Subtotal</span><span id="subtotal" class="font-bold text-white">R$ 0,00</span></div>
+      <div class="flex justify-between text-slate-400 text-sm"><span>Frete</span><span class="text-emerald-400 font-bold">GRATIS</span></div>
+      <div class="flex justify-between text-lg font-extrabold text-white pt-2 border-t border-slate-800"><span>Total</span><span id="totalFinal" class="text-amber-500">R$ 0,00</span></div>
+      <button onclick="finalizarCompra()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 rounded-lg transition flex items-center justify-center gap-2">
+        Finalizar Pedido <i data-lucide="arrow-right" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     PARTE 8: RODAPE
+     Informacoes da loja, garantias de suporte e contato.
+     "mt-auto" faz o rodape ficar colado no final da tela mesmo que tenha pouco conteudo.
+     ===================================================================== -->
+<footer class="bg-slate-900 border-t border-slate-800 py-10 mt-auto">
+  <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm text-slate-400">
+    <div>
+      <div class="text-white font-bold text-lg mb-3 flex items-center gap-2"><i data-lucide="shield-check" class="text-amber-500"></i> FutElite Shop</div>
+      <p>Loja especializada em artigos de futebol, chuteiras raras e camisas oficiais.</p>
+    </div>
+    <div>
+      <h4 class="text-white font-bold text-base mb-3">Suporte ao Cliente</h4>
+      <ul class="space-y-2"><li>✓ Envio rapido e seguro</li><li>✓ Produtos 100% originais</li><li>✓ Troca sem complicacao</li></ul>
+    </div>
+    <div>
+      <h4 class="text-white font-bold text-base mb-3">Contato</h4>
+      <p>Segunda a sabado: 08h as 20h</p>
+      <p class="text-amber-500 font-bold mt-1">contato@futeliteshop.com.br</p>
+    </div>
+  </div>
+</footer>
+
+<!-- =====================================================================
+     LIGACAO COM O JAVASCRIPT (arquivo separado)
+     Fica no fim do TAG <body> de proposito, assim todo o HTML acima ja
+     esta carregado quando o script comeca a rodar, e ele encontra os elementos
+     (campoBusca, gridProdutos, modal etc.) sem erro. 
+     Isso e essencial para todos os programas rodarem juntos.
+     ===================================================================== -->
+<script src="script.js"></script>
+
+</body>
+</html>
+
+<!--ATENCAO! Sobre o uso de IA, foi utilizada somente para entender e aprender tags novas para facilitar 
+   ou otimizar ou ate msm melhorar o site e melhorar a experiencia dos que iram visitar ele obg.-->
